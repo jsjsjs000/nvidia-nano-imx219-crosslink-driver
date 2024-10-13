@@ -1,0 +1,7 @@
+#ifndef __IMX219_CROSSLINK_H__
+#define __IMX219_CROSSLINK_H__
+
+#define IMX219_CROSSLINK_MIN_FRAME_LENGTH		        (256)
+#define IMX219_CROSSLINK_MAX_FRAME_LENGTH		        (65535)
+
+#endif  /* __IMX219_CROSSLINK_H__ */
