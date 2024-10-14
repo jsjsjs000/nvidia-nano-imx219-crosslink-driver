@@ -1,26 +1,27 @@
 # -------------------- Device Tree backup --------------------
-backup=~/nvidia-nano-imx219-crosslink
+backup=~/nvidia-nano-imx219-crosslink-driver
 mkdir -p $backup/dts/
 cp ~/l4t-gcc/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/tegra210-p3448-all-p3449-0000-imx219-crosslink.dts $backup/dts/
 cp ~/l4t-gcc/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms/tegra210-porg-camera-rbpcv5-dual-imx219-crosslink.dtsi $backup/dts/
 cp ~/l4t-gcc/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms/tegra210-camera-rbpcv5-dual-imx219-crosslink.dtsi $backup/dts/
 
 # -------------------- Driver backup --------------------
-backup=~/nvidia-nano-imx219-crosslink
+backup=~/nvidia-nano-imx219-crosslink-driver
 mkdir -p $backup/driver/
-cp ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/imx219_crosslink.c $backup/driver/
-cp ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/nvidia/include/media/imx219_crosslink.h $backup/driver/
+cp ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/imx219c.c $backup/driver/
+cp ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/nvidia/include/media/imx219c.h $backup/driver/
+
 
 # -------------------- Device Tree restore --------------------
-backup=~/nvidia-nano-imx219-crosslink
+backup=~/nvidia-nano-imx219-crosslink-driver
 cp $backup/dts/tegra210-p3448-all-p3449-0000-imx219-crosslink.dts     ~/l4t-gcc/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/
 cp $backup/dts/tegra210-porg-camera-rbpcv5-dual-imx219-crosslink.dtsi ~/l4t-gcc/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms/
 cp $backup/dts/tegra210-camera-rbpcv5-dual-imx219-crosslink.dtsi      ~/l4t-gcc/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms/
 
 # -------------------- Driver restore --------------------
-backup=~/nvidia-nano-imx219-crosslink
-cp $backup/driver/imx219_crosslink.c ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
-cp $backup/driver/imx219_crosslink.h ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/nvidia/include/media/
+backup=~/nvidia-nano-imx219-crosslink-driver
+cp $backup/driver/imx219c.c ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
+cp $backup/driver/imx219c.h ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/nvidia/include/media/
 
 
 # -------------------- Backup patch --------------------
@@ -49,7 +50,7 @@ code ~/l4t-gcc/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/
 # -------------------- Driver - Kernel setup --------------------
 code ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/Makefile
 # ----------------------------------------
-obj-$(CONFIG_VIDEO_IMX219_CROSSLINK) += imx219_crosslink.o
+obj-$(CONFIG_VIDEO_IMX219_CROSSLINK) += imx219c.o
 # ----------------------------------------
 
 code ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/Kconfig
@@ -68,10 +69,12 @@ l4t  # set environments
 
 l4t_menuconfig
 # ----------------------------------------
-/ imx219_crosslink = [m]
+/ imx219c = [m]
 # ----------------------------------------
 
-c; l4t_zImage && l4t_dtbs && l4t_modules
+alias l4t_upload='scp build/arch/arm64/boot/dts/tegra210-p3448-all-p3449-0000-imx219-crosslink.dtbo root@192.168.3.12:/boot/ && scp build/arch/arm64/boot/dts/tegra210-p3448-0000-p3449-0000-b00.dtb root@192.168.3.12:/boot/ && scp build/arch/arm64/boot/Image root@192.168.3.12:/boot/ && scp build/drivers/media/i2c/imx219c.ko root@192.168.3.12:/lib/modules/4.9.253-tegra/kernel/drivers/media/i2c/'
+
+c; l4t_zImage && l4t_dtbs && l4t_modules && l4t_upload
 
 ll build/arch/arm64/boot/dts/tegra210-p3448-all-p3449-0000-imx219-crosslink.dtbo
 scp build/arch/arm64/boot/dts/tegra210-p3448-all-p3449-0000-imx219-crosslink.dtbo root@192.168.3.12:/boot/
@@ -80,8 +83,8 @@ scp build/arch/arm64/boot/dts/tegra210-p3448-0000-p3449-0000-b00.dtb root@192.16
 
 ll build/arch/arm64/boot/Image
 scp build/arch/arm64/boot/Image root@192.168.3.12:/boot/
-ll build/drivers/media/i2c/imx219_crosslink.ko
-scp build/drivers/media/i2c/imx219_crosslink.ko root@192.168.3.12:/lib/modules/4.9.253-tegra/kernel/drivers/media/i2c/
+ll build/drivers/media/i2c/imx219c.ko
+scp build/drivers/media/i2c/imx219c.ko root@192.168.3.12:/lib/modules/4.9.253-tegra/kernel/drivers/media/i2c/
 
 	# nVidia
 depmod

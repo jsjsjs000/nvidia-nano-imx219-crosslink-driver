@@ -17,9 +17,9 @@
 
 #include "tegra210-camera-rbpcv5-dual-imx219-crosslink.dtsi"
 
-#define CAM1_PWDN		TEGRA_GPIO(S, 7)
-#define CAM2_PWDN		TEGRA_GPIO(T, 0)
-#define CAM_I2C_MUX		TEGRA_GPIO(I, 0) // NFC_EN GPIO
+#define CAM1_PWDN	  TEGRA_GPIO(S, 7)
+#define CAM2_PWDN	  TEGRA_GPIO(T, 0)
+#define CAM_I2C_MUX	TEGRA_GPIO(I, 0) // NFC_EN GPIO
 
 / {
 	cam_i2cmux {
@@ -32,8 +32,8 @@
 			reg = <0>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-			rbpcv5_imx219_crosslink_a@10 {
-				status = "disabled";
+			rbpcv5_imx219c_a@10 {
+				status = "okay";
 				reset-gpios = <&gpio CAM1_PWDN GPIO_ACTIVE_HIGH>;
 			};
 		};
@@ -41,8 +41,8 @@
 			reg = <1>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-			rbpcv5_imx219_crosslink_e@10 {
-				status = "disabled";
+			rbpcv5_imx219c_e@10 {
+				status = "okay";
 				reset-gpios = <&gpio CAM2_PWDN GPIO_ACTIVE_HIGH>;
 			};
 		};

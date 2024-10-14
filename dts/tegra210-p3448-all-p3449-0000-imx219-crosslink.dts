@@ -11,13 +11,13 @@
 /plugin/;
 
 / {
-	overlay-name = "Toshiba imx219_crosslink";
+	overlay-name = "imx219c";
 	jetson-header-name = "Jetson Nano CSI Connector";
 	compatible = "nvidia,p3449-0000-b00+p3448-0000-b00", "nvidia,p3449-0000-b00+p3448-0002-b00";
 
 	/* IM219 Crosslink dual sensor module */
 	fragment@0 {
-		target = <&imx219_crosslink_cam0>;
+		target = <&imx219c_cam0>;
 		__overlay__ {
 			status = "okay";
 		};
@@ -36,12 +36,12 @@
 		__overlay__ {
 			status = "okay";
 			pcl_id = "v4l2_sensor";
-			devname = "imx219_crosslink 7-0010";
-			proc-device-tree = "/proc/device-tree/cam_i2cmux/i2c@0/rbpcv5_imx219_crosslink_a@10";
+			devname = "imx219c 7-0010";
+			proc-device-tree = "/proc/device-tree/cam_i2cmux/i2c@0/rbpcv5_imx219c_a@10";
 		};
 	};
 	fragment@3 {
-		target = <&imx219_crosslink_cam1>;
+		target = <&imx219c_cam1>;
 		__overlay__ {
 			status = "okay";
 		};
@@ -60,8 +60,8 @@
 		__overlay__ {
 			status = "okay";
 			pcl_id = "v4l2_sensor";
-			devname = "imx219_crosslink 8-0010";
-			proc-device-tree = "/proc/device-tree/cam_i2cmux/i2c@1/rbpcv5_imx219_crosslink_e@10";
+			devname = "imx219c 8-0010";
+			proc-device-tree = "/proc/device-tree/cam_i2cmux/i2c@1/rbpcv5_imx219c_e@10";
 		};
 	};
 	fragment@6 {
@@ -72,49 +72,49 @@
 	};
 
 	fragment@7 {
-		target = <&rbpcv5_imx219_crosslink_vi_in0>;
+		target = <&rbpcv5_imx219c_vi_in0>;
 		__overlay__ {
 			status = "okay";
 			port-index = <0>;
 			bus-width = <2>;
-			remote-endpoint = <&rbpcv5_imx219_crosslink_csi_out0>;
+			remote-endpoint = <&rbpcv5_imx219c_csi_out0>;
 		};
 	};
 	fragment@8 {
-		target = <&rbpcv5_imx219_crosslink_vi_in1>;
+		target = <&rbpcv5_imx219c_vi_in1>;
 		__overlay__ {
 			status = "okay";
 			port-index = <4>;
 			bus-width = <2>;
-			remote-endpoint = <&rbpcv5_imx219_crosslink_csi_out1>;
+			remote-endpoint = <&rbpcv5_imx219c_csi_out1>;
 		};
 	};
 	fragment@9 {
-		target = <&rbpcv5_imx219_crosslink_csi_in0>;
+		target = <&rbpcv5_imx219c_csi_in0>;
 		__overlay__ {
 			status = "okay";
 			port-index = <0>;
 			bus-width = <2>;
-			remote-endpoint = <&rbpcv5_imx219_crosslink_dual_out0>;
+			remote-endpoint = <&rbpcv5_imx219c_dual_out0>;
 		};
 	};
 	fragment@10 {
-		target = <&rbpcv5_imx219_crosslink_csi_out0>;
+		target = <&rbpcv5_imx219c_csi_out0>;
 		__overlay__ {
 			status = "okay";
 		};
 	};
 	fragment@11 {
-		target = <&rbpcv5_imx219_crosslink_csi_in1>;
+		target = <&rbpcv5_imx219c_csi_in1>;
 		__overlay__ {
 			status = "okay";
 			port-index = <4>;
 			bus-width = <2>;
-			remote-endpoint = <&rbpcv5_imx219_crosslink_out1>;
+			remote-endpoint = <&rbpcv5_imx219c_out1>;
 		};
 	};
 	fragment@12 {
-		target = <&rbpcv5_imx219_crosslink_csi_out1>;
+		target = <&rbpcv5_imx219c_csi_out1>;
 		__overlay__ {
 			status = "okay";
 		};

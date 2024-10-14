@@ -27,18 +27,18 @@
 				#size-cells = <0>;
 				vi_port0: port@0 {
 					reg = <0>;
-					rbpcv5_imx219_crosslink_vi_in0: endpoint {
+					rbpcv5_imx219c_vi_in0: endpoint {
 						port-index = <0>;
 						bus-width = <2>;
-						remote-endpoint = <&rbpcv5_imx219_crosslink_csi_out0>;
+						remote-endpoint = <&rbpcv5_imx219c_csi_out0>;
 					};
 				};
 				vi_port1: port@1 {
 					reg = <1>;
-					rbpcv5_imx219_crosslink_vi_in1: endpoint {
+					rbpcv5_imx219c_vi_in1: endpoint {
 						port-index = <4>;
 						bus-width = <2>;
-						remote-endpoint = <&rbpcv5_imx219_crosslink_csi_out1>;
+						remote-endpoint = <&rbpcv5_imx219c_csi_out1>;
 					};
 				};
 			};
@@ -55,16 +55,16 @@
 					#size-cells = <0>;
 					csi_chan0_port0: port@0 {
 						reg = <0>;
-						rbpcv5_imx219_crosslink_csi_in0: endpoint@0 {
+						rbpcv5_imx219c_csi_in0: endpoint@0 {
 							port-index = <0>;
 							bus-width = <2>;
-							remote-endpoint = <&rbpcv5_imx219_crosslink_dual_out0>;
+							remote-endpoint = <&rbpcv5_imx219c_dual_out0>;
 						};
 					};
 					csi_chan0_port1: port@1 {
 						reg = <1>;
-						rbpcv5_imx219_crosslink_csi_out0: endpoint@1 {
-							remote-endpoint = <&rbpcv5_imx219_crosslink_vi_in0>;
+						rbpcv5_imx219c_csi_out0: endpoint@1 {
+							remote-endpoint = <&rbpcv5_imx219c_vi_in0>;
 						};
 					};
 				};
@@ -76,16 +76,16 @@
 					#size-cells = <0>;
 					csi_chan1_port0: port@2 {
 						reg = <0>;
-						rbpcv5_imx219_crosslink_csi_in1: endpoint@2 {
+						rbpcv5_imx219c_csi_in1: endpoint@2 {
 							port-index = <4>;
 							bus-width = <2>;
-							remote-endpoint = <&rbpcv5_imx219_crosslink_out1>;
+							remote-endpoint = <&rbpcv5_imx219c_out1>;
 						};
 					};
 					csi_chan1_port1: port@3 {
 						reg = <1>;
-						rbpcv5_imx219_crosslink_csi_out1: endpoint@3 {
-							remote-endpoint = <&rbpcv5_imx219_crosslink_vi_in1>;
+						rbpcv5_imx219c_csi_out1: endpoint@3 {
+							remote-endpoint = <&rbpcv5_imx219c_vi_in1>;
 						};
 					};
 				};
@@ -95,8 +95,8 @@
 
 	cam_i2cmux {
 		i2c_0: i2c@0 {
-			imx219_crosslink_cam0: rbpcv5_imx219_crosslink_a@10 {
-				compatible = "pco,imx219_crosslink";
+			imx219c_cam0: rbpcv5_imx219c_a@10 {
+				compatible = "pco,imx219c";
 				/* I2C device address */
 				reg = <0x10>;
 
@@ -107,9 +107,9 @@
 				physical_w = "3.680";
 				physical_h = "2.760";
 
-				sensor_model = "imx219_crosslink";
+				sensor_model = "imx219c";
 
-				use_sensor_mode_id = "true";
+use_sensor_mode_id = "false";
 
 				/**
 				* ==== Modes ====
@@ -192,39 +192,37 @@
 				* Sensor embedded metadata height in units of rows.
 				* If sensor does not support embedded metadata value should be 0.
 				*/
-				mode0 { /* imx219_crosslink_MODE_3840x2160 */
+				mode0 { /* IMX219_MODE_3264x2464_21FPS */
 					mclk_khz = "24000";
 					num_lanes = "2";
-					tegra_sinterface = "serial_a";
+					tegra_sinterface = "serial_e";
 					phy_mode = "DPHY";
-					discontinuous_clk = "no";
+					discontinuous_clk = "yes";
 					dpcm_enable = "false";
 					cil_settletime = "0";
 
-					active_w = "640";
-					active_h = "480";
-					mode_type = "bayer";
-					pixel_phase = "rggb";
-					csi_pixel_bit_depth = "10";
+					active_w = "3264";
+					active_h = "2464";
+					pixel_t = "bayer_rggb";
 					readout_orientation = "90";
-					line_length = "11200";
+					line_length = "3448";
 					inherent_gain = "1";
-					mclk_multiplier = "80";
-					pix_clk_hz = "840000000";
+					mclk_multiplier = "9.33";
+					pix_clk_hz = "182400000";
 
 					gain_factor = "16";
 					framerate_factor = "1000000";
 					exposure_factor = "1000000";
 					min_gain_val = "16"; /* 1.00x */
-					max_gain_val = "356"; /* 22x */
+					max_gain_val = "170"; /* 10.66x */
 					step_gain_val = "1";
 					default_gain = "16"; /* 1.00x */
 					min_hdr_ratio = "1";
 					max_hdr_ratio = "1";
 					min_framerate = "2000000"; /* 2.0 fps */
-					max_framerate = "60000000"; /* 60.0 fps */
+					max_framerate = "21000000"; /* 21.0 fps */
 					step_framerate = "1";
-					default_framerate = "60000000"; /* 60.0 fps */
+					default_framerate = "21000000"; /* 21.0 fps */
 					min_exp_time = "13"; /* us */
 					max_exp_time = "683709"; /* us */
 					step_exp_time = "1";
@@ -232,17 +230,17 @@
 
 					embedded_metadata_height = "2";
 				};
-				mode1 { /* imx219_crosslink_MODE_1920X1080 */
+				mode1 { /* imx219c_MODE_1920X1080 */
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_a";
 					phy_mode = "DPHY";
-					discontinuous_clk = "no";
+					discontinuous_clk = "yes";
 					dpcm_enable = "false";
 					cil_settletime = "0";
 
-					active_w = "1920";
-					active_h = "1080";
+					active_w = "640";
+					active_h = "480";
 					mode_type = "bayer";
 					pixel_phase = "rggb";
 					csi_pixel_bit_depth = "10";
@@ -279,18 +277,18 @@
 
 					port@0 {
 						reg = <0>;
-						rbpcv5_imx219_crosslink_dual_out0: endpoint {
+						rbpcv5_imx219c_dual_out0: endpoint {
 							port-index = <0>;
 							bus-width = <2>;
-							remote-endpoint = <&rbpcv5_imx219_crosslink_csi_in0>;
+							remote-endpoint = <&rbpcv5_imx219c_csi_in0>;
 						};
 					};
 				};
 			};
 		};
 		i2c_1: i2c@1 {
-			imx219_crosslink_cam1: rbpcv5_imx219_crosslink_e@10 {
-				compatible = "pco,imx219_crosslink";
+			imx219c_cam1: rbpcv5_imx219c_e@10 {
+				compatible = "pco,imx219c";
 				/* I2C device address */
 				reg = <0x10>;
 
@@ -301,9 +299,9 @@
 				physical_w = "3.680";
 				physical_h = "2.760";
 
-				sensor_model = "imx219_crosslink";
+				sensor_model = "imx219c";
 
-				use_sensor_mode_id = "true";
+use_sensor_mode_id = "false";
 
 				/**
 				* ==== Modes ====
@@ -386,39 +384,37 @@
 				* Sensor embedded metadata height in units of rows.
 				* If sensor does not support embedded metadata value should be 0.
 				*/
-				mode0 { /* imx219_crosslink_MODE_3840x2160 */
+				mode0 { /* IMX219_MODE_3264x2464_21FPS */
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_e";
 					phy_mode = "DPHY";
-					discontinuous_clk = "no";
+					discontinuous_clk = "yes";
 					dpcm_enable = "false";
 					cil_settletime = "0";
 
-					active_w = "640";
-					active_h = "480";
-					mode_type = "bayer";
-					pixel_phase = "rggb";
-					csi_pixel_bit_depth = "10";
+					active_w = "3264";
+					active_h = "2464";
+					pixel_t = "bayer_rggb";
 					readout_orientation = "90";
-					line_length = "11200";
+					line_length = "3448";
 					inherent_gain = "1";
-					mclk_multiplier = "80";
-					pix_clk_hz = "840000000";
+					mclk_multiplier = "9.33";
+					pix_clk_hz = "182400000";
 
 					gain_factor = "16";
 					framerate_factor = "1000000";
 					exposure_factor = "1000000";
 					min_gain_val = "16"; /* 1.00x */
-					max_gain_val = "356"; /* 22x */
+					max_gain_val = "170"; /* 10.66x */
 					step_gain_val = "1";
 					default_gain = "16"; /* 1.00x */
 					min_hdr_ratio = "1";
 					max_hdr_ratio = "1";
 					min_framerate = "2000000"; /* 2.0 fps */
-					max_framerate = "60000000"; /* 60.0 fps */
+					max_framerate = "21000000"; /* 21.0 fps */
 					step_framerate = "1";
-					default_framerate = "60000000"; /* 60.0 fps */
+					default_framerate = "21000000"; /* 21.0 fps */
 					min_exp_time = "13"; /* us */
 					max_exp_time = "683709"; /* us */
 					step_exp_time = "1";
@@ -426,17 +422,17 @@
 
 					embedded_metadata_height = "2";
 				};
-				mode1 { /* imx219_crosslink_MODE_1920X1080 */
+				mode1 { /* imx219c_MODE_1920X1080 */
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_e";
 					phy_mode = "DPHY";
-					discontinuous_clk = "no";
+					discontinuous_clk = "yes";
 					dpcm_enable = "false";
 					cil_settletime = "0";
 
-					active_w = "1920";
-					active_h = "1080";
+					active_w = "640";
+					active_h = "480";
 					mode_type = "bayer";
 					pixel_phase = "rggb";
 					csi_pixel_bit_depth = "10";
@@ -473,10 +469,10 @@
 
 					port@0 {
 						reg = <0>;
-						rbpcv5_imx219_crosslink_out1: endpoint {
+						rbpcv5_imx219c_out1: endpoint {
 							port-index = <4>;
 							bus-width = <2>;
-							remote-endpoint = <&rbpcv5_imx219_crosslink_csi_in1>;
+							remote-endpoint = <&rbpcv5_imx219c_csi_in1>;
 						};
 					};
 				};
@@ -540,8 +536,8 @@
 				orientation = "1";
 				cam_module0_drivernode0: drivernode0 {
 					pcl_id = "v4l2_sensor";
-					devname = "imx219_crosslink 7-0010";
-					proc-device-tree = "/proc/device-tree/cam_i2cmux/i2c@0/rbpcv5_imx219_crosslink_a@10";
+					devname = "imx219c 7-0010";
+					proc-device-tree = "/proc/device-tree/cam_i2cmux/i2c@0/rbpcv5_imx219c_a@10";
 				};
 			};
 			cam_module1: module1 {
@@ -550,8 +546,8 @@
 				orientation = "1";
 				cam_module1_drivernode0: drivernode0 {
 					pcl_id = "v4l2_sensor";
-					devname = "imx219_crosslink 8-0010";
-					proc-device-tree = "/proc/device-tree/cam_i2cmux/i2c@1/rbpcv5_imx219_crosslink_e@10";
+					devname = "imx219c 8-0010";
+					proc-device-tree = "/proc/device-tree/cam_i2cmux/i2c@1/rbpcv5_imx219c_e@10";
 				};
 			};
 		};

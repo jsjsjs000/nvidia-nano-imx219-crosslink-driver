@@ -16,6 +16,10 @@
 #include <media/tegracam_core.h>
 #include <media/imx219_crosslink.h>
 
+/* imx219 sensor register address */
+#define IMX219_CROSSLINK_MODEL_ID_ADDR_MSB		0x0000
+#define IMX219_CROSSLINK_MODEL_ID_ADDR_LSB		0x0001
+
 static const struct of_device_id imx219_crosslink_of_match[] = {
 	{.compatible = "pco,imx219_crosslink",},
 	{},
@@ -24,11 +28,11 @@ static const struct of_device_id imx219_crosslink_of_match[] = {
 MODULE_DEVICE_TABLE(of, imx219_crosslink_of_match);
 
 enum {
-	imx219_crosslink_MODE_640x480_60FPS,
-	imx219_crosslink_MODE_1920x1080_60FPS,
-	imx219_crosslink_MODE_COMMON,
-	imx219_crosslink_START_STREAM,
-	imx219_crosslink_STOP_STREAM,
+	IMX219_CROSSLINK_MODE_3264x2464_21FPS,
+	IMX219_CROSSLINK_MODE_640x480_60FPS,
+	IMX219_CROSSLINK_MODE_COMMON,
+	IMX219_CROSSLINK_START_STREAM,
+	IMX219_CROSSLINK_STOP_STREAM,
 };
 
 static const int imx219_crosslink_30_fr[] = {
@@ -39,9 +43,13 @@ static const int imx219_crosslink_60_fr[] = {
 	60,
 };
 
+static const int imx219_crosslink_21_fr[] = {
+	21,
+};
+
 static const struct camera_common_frmfmt imx219_crosslink_frmfmt[] = {
-	{{640, 480}, imx219_crosslink_60_fr, 1, 0, imx219_crosslink_MODE_640x480_60FPS},
-	{{1920, 1080}, imx219_crosslink_60_fr, 1, 0, imx219_crosslink_MODE_1920x1080_60FPS},
+	{{3264, 2464}, imx219_crosslink_21_fr, 1, 0, IMX219_CROSSLINK_MODE_3264x2464_21FPS},
+	{{640, 480}, imx219_crosslink_60_fr, 1, 0, IMX219_CROSSLINK_MODE_640x480_60FPS},
 };
 
 static const u32 ctrl_cid_list[] = {
@@ -60,64 +68,12 @@ struct imx219_crosslink {
 	struct tegracam_device *tc_dev;
 };
 
-
-static const struct regmap_range ctl_regmap_rw_ranges[] = {
-	regmap_reg_range(0x0000, 0x00ff),
-};
-
-static const struct regmap_access_table ctl_regmap_access = {
-	.yes_ranges = ctl_regmap_rw_ranges,
-	.n_yes_ranges = ARRAY_SIZE(ctl_regmap_rw_ranges),
-};
-
-static const struct regmap_config ctl_regmap_config = {
-	.reg_bits = 16,
-	.reg_stride = 2,
-	.val_bits = 16,
-	.cache_type = REGCACHE_NONE,
-	.max_register = 0x00ff,
-	.reg_format_endian = REGMAP_ENDIAN_BIG,
-	.val_format_endian = REGMAP_ENDIAN_BIG,
-	.rd_table = &ctl_regmap_access,
-	.wr_table = &ctl_regmap_access,
-	.name = "imx219-crosslink-ctl",
-};
-
-static const struct regmap_range tx_regmap_rw_ranges[] = {
-	regmap_reg_range(0x0100, 0x05ff),
-};
-
-static const struct regmap_access_table tx_regmap_access = {
-	.yes_ranges = tx_regmap_rw_ranges,
-	.n_yes_ranges = ARRAY_SIZE(tx_regmap_rw_ranges),
-};
-
 static const struct regmap_config sensor_regmap_config = {
 	.reg_bits = 16,
-	.reg_stride = 4,
-	.val_bits = 32,
-	.cache_type = REGCACHE_NONE,
-	.max_register = 0x05ff,
-	.reg_format_endian = REGMAP_ENDIAN_BIG,
-	.val_format_endian = REGMAP_ENDIAN_BIG_LITTLE,
-	.rd_table = &tx_regmap_access,
-	.wr_table = &tx_regmap_access,
-	.name = "imx219-crosslink-tx",
+	.val_bits = 8,
+	.cache_type = REGCACHE_RBTREE,
+	.use_single_rw = true,
 };
-
-// static const struct regmap_config sensor_regmap_config = {
-// 	.reg_bits = 16,
-// 	// .val_bits = 8,
-// 	// .cache_type = REGCACHE_RBTREE,
-// 	// .use_single_rw = true,
-// 	.val_bits = 16,
-// 	.cache_type = REGCACHE_NONE,
-// };
-
-
-
-
-
 
 // static inline void imx219_crosslink_get_frame_length_regs(imx219_crosslink_reg * regs,
 // 						u32 frame_length)
@@ -647,7 +603,7 @@ static int imx219_crosslink_set_mode(struct tegracam_device *tc_dev)
 
 	dev_dbg(tc_dev->dev, "%s:\n", __func__);
 
-	// err = imx219_crosslink_write_table(priv, mode_table[imx219_crosslink_MODE_COMMON]);
+	// err = imx219_crosslink_write_table(priv, mode_table[IMX219_CROSSLINK_MODE_COMMON]);
 	// if (err)
 	// 	return err;
 
@@ -663,7 +619,7 @@ static int imx219_crosslink_start_streaming(struct tegracam_device *tc_dev)
 	// struct imx219_crosslink *priv = (struct imx219_crosslink *)tegracam_get_privdata(tc_dev);
 
 	// dev_dbg(tc_dev->dev, "%s:\n", __func__);
-	// return imx219_crosslink_write_table(priv, mode_table[imx219_crosslink_START_STREAM]);
+	// return imx219_crosslink_write_table(priv, mode_table[IMX219_CROSSLINK_START_STREAM]);
 	return 0;
 }
 
@@ -673,7 +629,7 @@ static int imx219_crosslink_stop_streaming(struct tegracam_device *tc_dev)
 	// struct imx219_crosslink *priv = (struct imx219_crosslink *)tegracam_get_privdata(tc_dev);
 
 	// dev_dbg(tc_dev->dev, "%s:\n", __func__);
-	// err = imx219_crosslink_write_table(priv, mode_table[imx219_crosslink_STOP_STREAM]);
+	// err = imx219_crosslink_write_table(priv, mode_table[IMX219_CROSSLINK_STOP_STREAM]);
 
 	// return err;
 	return 0;
@@ -698,7 +654,7 @@ static int imx219_crosslink_board_setup(struct imx219_crosslink *priv)
 {
 	struct camera_common_data *s_data = priv->s_data;
 	struct device *dev = s_data->dev;
-	// u8 reg_val[2];
+	u8 reg_val[2];
 	int err = 0;
 
 	// Skip mclk enable as this camera has an internal oscillator
@@ -710,24 +666,24 @@ static int imx219_crosslink_board_setup(struct imx219_crosslink *priv)
 	}
 
 	/* Probe sensor model id registers */
-	// err = imx219_crosslink_read_reg(s_data, imx219_crosslink_MODEL_ID_ADDR_MSB, &reg_val[0]);
-	// if (err) {
-	// 	dev_err(dev, "%s: error during i2c read probe (%d)\n",
-	// 		__func__, err);
-	// 	goto err_reg_probe;
-	// }
-	// err = imx219_crosslink_read_reg(s_data, imx219_crosslink_MODEL_ID_ADDR_LSB, &reg_val[1]);
-	// if (err) {
-	// 	dev_err(dev, "%s: error during i2c read probe (%d)\n",
-	// 		__func__, err);
-	// 	goto err_reg_probe;
-	// }
+	err = imx219_crosslink_read_reg(s_data, IMX219_CROSSLINK_MODEL_ID_ADDR_MSB, &reg_val[0]);
+	if (err) {
+		dev_err(dev, "%s: error during i2c read probe (%d)\n",
+			__func__, err);
+		goto err_reg_probe;
+	}
+	err = imx219_crosslink_read_reg(s_data, IMX219_CROSSLINK_MODEL_ID_ADDR_LSB, &reg_val[1]);
+	if (err) {
+		dev_err(dev, "%s: error during i2c read probe (%d)\n",
+			__func__, err);
+		goto err_reg_probe;
+	}
 
 	// if (!((reg_val[0] == 0x00) && reg_val[1] == 0x00))
 	// 	dev_err(dev, "%s: invalid sensor model id: %x%x\n",
 	// 		__func__, reg_val[0], reg_val[1]);
 
-	// /* Sensor fine integration time */
+	/* Sensor fine integration time */
 	// err = imx219_crosslink_get_fine_integ_time(priv, &priv->fine_integ_time);
 	// if (err)
 	// 	dev_err(dev, "%s: error querying sensor fine integ. time\n",
@@ -735,8 +691,8 @@ static int imx219_crosslink_board_setup(struct imx219_crosslink *priv)
 
 	return 0;
 
-// err_reg_probe:
-// 	imx219_crosslink_power_off(s_data);
+err_reg_probe:
+	imx219_crosslink_power_off(s_data);
 
 done:
 	return err;

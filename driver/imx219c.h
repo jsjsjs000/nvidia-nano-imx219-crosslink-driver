@@ -1,36 +1,31 @@
-#ifndef __IMX219_CROSSLINK_H__
-#define __IMX219_CROSSLINK_H__
+#ifndef __IMX219C_H__
+#define __IMX219C_H__
 
-#define IMX219_CROSSLINK_MIN_FRAME_LENGTH		        (256)
-#define IMX219_CROSSLINK_MAX_FRAME_LENGTH		        (65535)
-
-
-
-
+// uapi
 #include <linux/ioctl.h>
 #include <media/nvc.h>
 
-#define IMX219_CROSSLINK_IOCTL_SET_MODE		_IOW('o', 1, struct imx219_crosslink_mode)
-#define IMX219_CROSSLINK_IOCTL_GET_STATUS		_IOR('o', 2, __u8)
-#define IMX219_CROSSLINK_IOCTL_SET_FRAME_LENGTH	_IOW('o', 3, __u32)
-#define IMX219_CROSSLINK_IOCTL_SET_COARSE_TIME	_IOW('o', 4, __u32)
-#define IMX219_CROSSLINK_IOCTL_SET_GAIN		_IOW('o', 5, struct imx219_crosslink_gain)
-#define IMX219_CROSSLINK_IOCTL_GET_FUSEID		_IOR('o', 6, struct nvc_fuseid)
-#define IMX219_CROSSLINK_IOCTL_SET_GROUP_HOLD	_IOW('o', 7, struct imx219_crosslink_ae)
-#define IMX219_CROSSLINK_IOCTL_GET_AFDAT		_IOR('o', 8, __u32)
-#define IMX219_CROSSLINK_IOCTL_SET_POWER		_IOW('o', 20, __u32)
-#define IMX219_CROSSLINK_IOCTL_GET_FLASH_CAP	_IOR('o', 30, __u32)
-#define IMX219_CROSSLINK_IOCTL_SET_FLASH_MODE	_IOW('o', 31, \
-						struct imx219_crosslink_flash_control)
+#define IMX219C_IOCTL_SET_MODE		_IOW('o', 1, struct imx219c_mode)
+#define IMX219C_IOCTL_GET_STATUS		_IOR('o', 2, __u8)
+#define IMX219C_IOCTL_SET_FRAME_LENGTH	_IOW('o', 3, __u32)
+#define IMX219C_IOCTL_SET_COARSE_TIME	_IOW('o', 4, __u32)
+#define IMX219C_IOCTL_SET_GAIN		_IOW('o', 5, struct imx219c_gain)
+#define IMX219C_IOCTL_GET_FUSEID		_IOR('o', 6, struct nvc_fuseid)
+#define IMX219C_IOCTL_SET_GROUP_HOLD	_IOW('o', 7, struct imx219c_ae)
+#define IMX219C_IOCTL_GET_AFDAT		_IOR('o', 8, __u32)
+#define IMX219C_IOCTL_SET_POWER		_IOW('o', 20, __u32)
+#define IMX219C_IOCTL_GET_FLASH_CAP	_IOR('o', 30, __u32)
+#define IMX219C_IOCTL_SET_FLASH_MODE	_IOW('o', 31, \
+						struct imx219c_flash_control)
 
-/* TODO: revisit these values for IMX219_CROSSLINK */
-#define IMX219_CROSSLINK_FRAME_LENGTH_ADDR_MSB		0x0160
-#define IMX219_CROSSLINK_FRAME_LENGTH_ADDR_LSB		0x0161
-#define IMX219_CROSSLINK_COARSE_TIME_ADDR_MSB		0x015a
-#define IMX219_CROSSLINK_COARSE_TIME_ADDR_LSB		0x015b
-#define IMX219_CROSSLINK_GAIN_ADDR			0x0157
+/* TODO: revisit these values for IMX219C */
+#define IMX219C_FRAME_LENGTH_ADDR_MSB		0x0160
+#define IMX219C_FRAME_LENGTH_ADDR_LSB		0x0161
+#define IMX219C_COARSE_TIME_ADDR_MSB		0x015a
+#define IMX219C_COARSE_TIME_ADDR_LSB		0x015b
+#define IMX219C_GAIN_ADDR			0x0157
 
-struct imx219_crosslink_flash_control {
+struct imx219c_flash_control {
 	__u8 enable;
 	__u8 edge_trig_en;
 	__u8 start_edge;
@@ -38,7 +33,7 @@ struct imx219_crosslink_flash_control {
 	__u16 delay_frm;
 };
 
-struct imx219_crosslink_mode {
+struct imx219c_mode {
 	int xres;
 	int yres;
 	__u32 frame_length;
@@ -46,7 +41,7 @@ struct imx219_crosslink_mode {
 	__u32 gain;
 };
 
-struct imx219_crosslink_ae {
+struct imx219c_ae {
 	__u32 frame_length;
 	__u8  frame_length_enable;
 	__u32 coarse_time;
@@ -60,21 +55,21 @@ struct imx219_crosslink_ae {
 
 
 
-#define IMX219_CROSSLINK_FUSE_ID_SIZE		6
-#define IMX219_CROSSLINK_FUSE_ID_STR_SIZE		(IMX219_CROSSLINK_FUSE_ID_SIZE * 2)
+#define IMX219C_FUSE_ID_SIZE		6
+#define IMX219C_FUSE_ID_STR_SIZE		(IMX219C_FUSE_ID_SIZE * 2)
 
-struct imx219_crosslink_power_rail {
+struct imx219c_power_rail {
 	struct regulator *dvdd;
 	struct regulator *avdd;
 	struct regulator *iovdd;
 	struct regulator *vdd_af;
 };
 
-struct imx219_crosslink_platform_data {
-	struct imx219_crosslink_flash_control flash_cap;
+struct imx219c_platform_data {
+	struct imx219c_flash_control flash_cap;
 	const char *mclk_name; /* NULL for default default_mclk */
-	int (*power_on)(struct imx219_crosslink_power_rail *pw);
-	int (*power_off)(struct imx219_crosslink_power_rail *pw);
+	int (*power_on)(struct imx219c_power_rail *pw);
+	int (*power_off)(struct imx219c_power_rail *pw);
 };
 
 
@@ -82,26 +77,26 @@ struct imx219_crosslink_platform_data {
 
 
 
-#define IMX219_CROSSLINK_TABLE_WAIT_MS	0
-#define IMX219_CROSSLINK_TABLE_END	1
+#define IMX219C_TABLE_WAIT_MS	0
+#define IMX219C_TABLE_END	1
 
-#define imx219_crosslink_reg struct reg_8
+#define imx219c_reg struct reg_8
 
-static imx219_crosslink_reg imx219_crosslink_start_stream[] = {
+static imx219c_reg imx219c_start_stream[] = {
 	{0x0100, 0x01},
-	{IMX219_CROSSLINK_TABLE_WAIT_MS, 3},
-	{IMX219_CROSSLINK_TABLE_END, 0x00}
+	{IMX219C_TABLE_WAIT_MS, 3},
+	{IMX219C_TABLE_END, 0x00}
 };
 
-static imx219_crosslink_reg imx219_crosslink_stop_stream[] = {
+static imx219c_reg imx219c_stop_stream[] = {
 	{0x0100, 0x00},
-	{IMX219_CROSSLINK_TABLE_END, 0x00}
+	{IMX219C_TABLE_END, 0x00}
 };
 
-static imx219_crosslink_reg imx219_crosslink_mode_common[] = {
+static imx219c_reg imx219c_mode_common[] = {
 	/* software reset */
 	{0x0103, 0x01},
-	{IMX219_CROSSLINK_TABLE_WAIT_MS, 10},
+	{IMX219C_TABLE_WAIT_MS, 10},
 	/* sensor config */
 	{0x0114, 0x01}, /* D-Phy, 2-lane */
 	{0x0128, 0x00},
@@ -127,10 +122,10 @@ static imx219_crosslink_reg imx219_crosslink_mode_common[] = {
 	{0x4793, 0x10},
 	{0x4797, 0x0E},
 	{0x479B, 0x0E},
-	{IMX219_CROSSLINK_TABLE_END, 0x00}
+	{IMX219C_TABLE_END, 0x00}
 };
 
-static imx219_crosslink_reg imx219_crosslink_mode_3264x2464_21fps[] = {
+static imx219c_reg imx219c_mode_3264x2464_21fps[] = {
 	/* capture settings */
 	{0x0157, 0x00}, /* ANALOG_GAIN_GLOBAL[7:0] */
 	{0x015A, 0x09}, /* COARSE_INTEG_TIME[15:8] */
@@ -175,10 +170,10 @@ static imx219_crosslink_reg imx219_crosslink_mode_3264x2464_21fps[] = {
 	{0x030B, 0x01},
 	{0x030C, 0x00},
 	{0x030D, 0x72},
-	{IMX219_CROSSLINK_TABLE_END, 0x00}
+	{IMX219C_TABLE_END, 0x00}
 };
 
-static imx219_crosslink_reg imx219_crosslink_mode_3264x1848_28fps[] = {
+static imx219c_reg imx219c_mode_3264x1848_28fps[] = {
 	/* capture settings */
 	{0x0157, 0x00}, /* ANALOG_GAIN_GLOBAL[7:0] */
 	{0x015A, 0x07}, /* COARSE_INTEG_TIME[15:8] */
@@ -223,10 +218,10 @@ static imx219_crosslink_reg imx219_crosslink_mode_3264x1848_28fps[] = {
 	{0x030B, 0x01},
 	{0x030C, 0x00},
 	{0x030D, 0x72},
-	{IMX219_CROSSLINK_TABLE_END, 0x00}
+	{IMX219C_TABLE_END, 0x00}
 };
 
-static imx219_crosslink_reg imx219_crosslink_mode_1920x1080_30fps[] = {
+static imx219c_reg imx219c_mode_1920x1080_30fps[] = {
 	/* capture settings */
 	{0x0157, 0x00}, /* ANALOG_GAIN_GLOBAL[7:0] */
 	{0x015A, 0x06}, /* COARSE_INTEG_TIME[15:8] */
@@ -265,10 +260,10 @@ static imx219_crosslink_reg imx219_crosslink_mode_1920x1080_30fps[] = {
 	{0x030B, 0x01},
 	{0x030C, 0x00},
 	{0x030D, 0x72},
-	{IMX219_CROSSLINK_TABLE_END, 0x00}
+	{IMX219C_TABLE_END, 0x00}
 };
 
-static imx219_crosslink_reg imx219_crosslink_mode_1640x1232_30fps[] = {
+static imx219c_reg imx219c_mode_1640x1232_30fps[] = {
 	/* capture settings */
 	{0x0157, 0x00}, /* ANALOG_GAIN_GLOBAL[7:0] */
 	{0x015A, 0x06}, /* COARSE_INTEG_TIME[15:8] */
@@ -307,10 +302,10 @@ static imx219_crosslink_reg imx219_crosslink_mode_1640x1232_30fps[] = {
 	{0x030B, 0x01},
 	{0x030C, 0x00},
 	{0x030D, 0x72},
-	{IMX219_CROSSLINK_TABLE_END, 0x00}
+	{IMX219C_TABLE_END, 0x00}
 };
 
-static imx219_crosslink_reg imx219_crosslink_mode_1280x720_60fps[] = {
+static imx219c_reg imx219c_mode_1280x720_60fps[] = {
 	/* capture settings */
 	{0x0157, 0x00}, /* ANALOG_GAIN_GLOBAL[7:0] */
 	{0x015A, 0x03}, /* COARSE_INTEG_TIME[15:8] */
@@ -349,11 +344,11 @@ static imx219_crosslink_reg imx219_crosslink_mode_1280x720_60fps[] = {
 	{0x030B, 0x01},
 	{0x030C, 0x00},
 	{0x030D, 0x72},
-	{IMX219_CROSSLINK_TABLE_END, 0x00}
+	{IMX219C_TABLE_END, 0x00}
 };
 
 /*
-static imx219_crosslink_reg imx219_crosslink_mode_1280x720_120fps[] = {
+static imx219c_reg imx219c_mode_1280x720_120fps[] = {
 	// capture settings
 	{0x0157, 0x00}, // ANALOG_GAIN_GLOBAL[7:0]
 	{0x015A, 0x01}, // COARSE_INTEG_TIME[15:8]
@@ -392,46 +387,46 @@ static imx219_crosslink_reg imx219_crosslink_mode_1280x720_120fps[] = {
 	{0x030B, 0x01},
 	{0x030C, 0x00},
 	{0x030D, 0x66},
-	{IMX219_CROSSLINK_TABLE_END, 0x00}
+	{IMX219C_TABLE_END, 0x00}
 };
 */
 enum {
-	IMX219_CROSSLINK_MODE_3264x2464_21FPS,
-	IMX219_CROSSLINK_MODE_3264x1848_28FPS,
-	IMX219_CROSSLINK_MODE_1920x1080_30FPS,
-	IMX219_CROSSLINK_MODE_1640x1232_30FPS,
-	IMX219_CROSSLINK_MODE_1280x720_60FPS,
+	IMX219C_MODE_3264x2464_21FPS,
+	IMX219C_MODE_3264x1848_28FPS,
+	IMX219C_MODE_1920x1080_30FPS,
+	IMX219C_MODE_1640x1232_30FPS,
+	IMX219C_MODE_1280x720_60FPS,
 
-	IMX219_CROSSLINK_MODE_COMMON,
-	IMX219_CROSSLINK_START_STREAM,
-	IMX219_CROSSLINK_STOP_STREAM,
+	IMX219C_MODE_COMMON,
+	IMX219C_START_STREAM,
+	IMX219C_STOP_STREAM,
 };
 
-static imx219_crosslink_reg *mode_table[] = {
-	[IMX219_CROSSLINK_MODE_3264x2464_21FPS] = imx219_crosslink_mode_3264x2464_21fps,
-	[IMX219_CROSSLINK_MODE_3264x1848_28FPS] = imx219_crosslink_mode_3264x1848_28fps,
-	[IMX219_CROSSLINK_MODE_1920x1080_30FPS] = imx219_crosslink_mode_1920x1080_30fps,
-	[IMX219_CROSSLINK_MODE_1640x1232_30FPS] = imx219_crosslink_mode_1640x1232_30fps,
-	[IMX219_CROSSLINK_MODE_1280x720_60FPS] = imx219_crosslink_mode_1280x720_60fps,
+static imx219c_reg *mode_table[] = {
+	[IMX219C_MODE_3264x2464_21FPS] = imx219c_mode_3264x2464_21fps,
+	[IMX219C_MODE_3264x1848_28FPS] = imx219c_mode_3264x1848_28fps,
+	[IMX219C_MODE_1920x1080_30FPS] = imx219c_mode_1920x1080_30fps,
+	[IMX219C_MODE_1640x1232_30FPS] = imx219c_mode_1640x1232_30fps,
+	[IMX219C_MODE_1280x720_60FPS] = imx219c_mode_1280x720_60fps,
 
-	[IMX219_CROSSLINK_MODE_COMMON]  = imx219_crosslink_mode_common,
-	[IMX219_CROSSLINK_START_STREAM]  = imx219_crosslink_start_stream,
-	[IMX219_CROSSLINK_STOP_STREAM]  = imx219_crosslink_stop_stream,
+	[IMX219C_MODE_COMMON]  = imx219c_mode_common,
+	[IMX219C_START_STREAM]  = imx219c_start_stream,
+	[IMX219C_STOP_STREAM]  = imx219c_stop_stream,
 };
 
-static const int imx219_crosslink_21fps[] = {
+static const int imx219c_21fps[] = {
 	21,
 };
 
-static const int imx219_crosslink_28fps[] = {
+static const int imx219c_28fps[] = {
 	28,
 };
 
-static const int imx219_crosslink_30fps[] = {
+static const int imx219c_30fps[] = {
 	30,
 };
 
-static const int imx219_crosslink_60fps[] = {
+static const int imx219c_60fps[] = {
 	60,
 };
 
@@ -439,13 +434,13 @@ static const int imx219_crosslink_60fps[] = {
  * WARNING: frmfmt ordering need to match mode definition in
  * device tree!
  */
-static const struct camera_common_frmfmt imx219_crosslink_frmfmt[] = {
-	{{3264, 2464},	imx219_crosslink_21fps, 1, 0, IMX219_CROSSLINK_MODE_3264x2464_21FPS},
+static const struct camera_common_frmfmt imx219c_frmfmt[] = {
+	{{3264, 2464},	imx219c_21fps, 1, 0, IMX219C_MODE_3264x2464_21FPS},
 	/* Add modes with no device tree support after below */
-	{{3264, 1848},	imx219_crosslink_28fps, 1, 0, IMX219_CROSSLINK_MODE_3264x1848_28FPS},
-	{{1920, 1080},	imx219_crosslink_30fps, 1, 0, IMX219_CROSSLINK_MODE_1920x1080_30FPS},
-	{{1640, 1232},	imx219_crosslink_30fps, 1, 0, IMX219_CROSSLINK_MODE_1640x1232_30FPS},
-	{{1280, 720},	imx219_crosslink_60fps, 1, 0, IMX219_CROSSLINK_MODE_1280x720_60FPS},
+	{{3264, 1848},	imx219c_28fps, 1, 0, IMX219C_MODE_3264x1848_28FPS},
+	{{1920, 1080},	imx219c_30fps, 1, 0, IMX219C_MODE_1920x1080_30FPS},
+	{{1640, 1232},	imx219c_30fps, 1, 0, IMX219C_MODE_1640x1232_30FPS},
+	{{1280, 720},	imx219c_60fps, 1, 0, IMX219C_MODE_1280x720_60FPS},
 };
 
-#endif  /* __IMX219_CROSSLINK_H__ */
+#endif  /* __IMX219C_H__ */
