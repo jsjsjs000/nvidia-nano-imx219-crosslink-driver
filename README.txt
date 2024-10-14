@@ -117,3 +117,22 @@ PYTHON_EOF
 # nano /boot/extlinux/extlinux.conf
 
 reboot
+
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+	# działa 640x480x60
+code ~/l4t-gcc/Linux_for_Tegra/source/public/kernel/nvidia/drivers/media/i2c/imx219_mode_tbls.h
+# ----------------------------------------
+static const struct camera_common_frmfmt imx219_frmfmt[] = {
+	// {{3264, 2464},	imx219_21fps, 1, 0, IMX219_MODE_640x480_60FPS},
+	{{640, 480},	imx219_60fps, 1, 0, IMX219_MODE_640x480_60FPS}, // $$
+# ----------------------------------------
+
+DSIPLAY=:0.0 gst-launch-1.0 nvarguscamerasrc ! 'video/x-raw(memory:NVMM), width=640, height=480, format=(string)NV12, framerate=(fraction)60/1' ! nvoverlaysink -e
+
+ls /dev/v4l-subdev*
+#> /dev/v4l-subdev0  /dev/v4l-subdev1
+
+ls /dev/v4l/by-path/platform-54080000.vi-video-index0
+#> /dev/v4l/by-path/platform-54080000.vi-video-index0
+
