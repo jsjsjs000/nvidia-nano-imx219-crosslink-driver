@@ -118,11 +118,11 @@ static inline int imx219c_write_reg(struct camera_common_data *s_data,
 	return err;
 }
 
-static int imx219c_write_table(struct imx219c *priv, const imx219c_reg table[])
-{
-	return regmap_util_write_table_8(priv->s_data->regmap, table, NULL, 0,
-		IMX219C_TABLE_WAIT_MS, IMX219C_TABLE_END);
-}
+// static int imx219c_write_table(struct imx219c *priv, const imx219c_reg table[])
+// {
+// 	return regmap_util_write_table_8(priv->s_data->regmap, table, NULL, 0,
+// 		IMX219C_TABLE_WAIT_MS, IMX219C_TABLE_END);
+// }
 
 static int imx219c_set_group_hold(struct tegracam_device *tc_dev, bool val)
 {
@@ -130,149 +130,149 @@ static int imx219c_set_group_hold(struct tegracam_device *tc_dev, bool val)
 	return 0;
 }
 
-static int imx219c_get_fine_integ_time(struct imx219c *priv, u16 *fine_time)
-{
-	struct camera_common_data *s_data = priv->s_data;
-	int err = 0;
-	u8 reg_val[2];
+// static int imx219c_get_fine_integ_time(struct imx219c *priv, u16 *fine_time)
+// {
+// 	struct camera_common_data *s_data = priv->s_data;
+// 	int err = 0;
+// 	u8 reg_val[2];
 
-	err = imx219c_read_reg(s_data, IMX219C_FINE_INTEG_TIME_ADDR_MSB,
-		&reg_val[0]);
-	if (err)
-		goto done;
+// 	err = imx219c_read_reg(s_data, IMX219C_FINE_INTEG_TIME_ADDR_MSB,
+// 		&reg_val[0]);
+// 	if (err)
+// 		goto done;
 
-	err = imx219c_read_reg(s_data, IMX219C_FINE_INTEG_TIME_ADDR_LSB,
-		&reg_val[1]);
-	if (err)
-		goto done;
+// 	err = imx219c_read_reg(s_data, IMX219C_FINE_INTEG_TIME_ADDR_LSB,
+// 		&reg_val[1]);
+// 	if (err)
+// 		goto done;
 
-	*fine_time = (reg_val[0] << 8) | reg_val[1];
+// 	*fine_time = (reg_val[0] << 8) | reg_val[1];
 
-done:
-	return err;
-}
+// done:
+// 	return err;
+// }
 
 static int imx219c_set_gain(struct tegracam_device *tc_dev, s64 val)
 {
-	struct camera_common_data *s_data = tc_dev->s_data;
-	struct device *dev = s_data->dev;
-	const struct sensor_mode_properties *mode =
-		&s_data->sensor_props.sensor_modes[s_data->mode_prop_idx];
+	// struct camera_common_data *s_data = tc_dev->s_data;
+	// struct device *dev = s_data->dev;
+	// const struct sensor_mode_properties *mode =
+	// 	&s_data->sensor_props.sensor_modes[s_data->mode_prop_idx];
 
-	int err = 0;
-	imx219c_reg gain_reg;
-	s16 gain;
+	// int err = 0;
+	// imx219c_reg gain_reg;
+	// s16 gain;
 
-	if (val < mode->control_properties.min_gain_val)
-		val = mode->control_properties.min_gain_val;
-	else if (val > mode->control_properties.max_gain_val)
-		val = mode->control_properties.max_gain_val;
+	// if (val < mode->control_properties.min_gain_val)
+	// 	val = mode->control_properties.min_gain_val;
+	// else if (val > mode->control_properties.max_gain_val)
+	// 	val = mode->control_properties.max_gain_val;
 
-	/* translate value (from normalized analog gain) */
-	gain = (s16)((256 * mode->control_properties.gain_factor) / val);
-	gain = 256 - gain;
+	// /* translate value (from normalized analog gain) */
+	// gain = (s16)((256 * mode->control_properties.gain_factor) / val);
+	// gain = 256 - gain;
 
-	if (gain < IMX219C_MIN_GAIN)
-		gain = IMX219C_MAX_GAIN;
-	else if (gain > IMX219C_MAX_GAIN)
-		gain = IMX219C_MAX_GAIN;
+	// if (gain < IMX219C_MIN_GAIN)
+	// 	gain = IMX219C_MAX_GAIN;
+	// else if (gain > IMX219C_MAX_GAIN)
+	// 	gain = IMX219C_MAX_GAIN;
 
-	dev_dbg(dev, "%s: val: %lld (/%d) [times], gain: %u\n",
-		__func__, val, mode->control_properties.gain_factor, gain);
+	// dev_dbg(dev, "%s: val: %lld (/%d) [times], gain: %u\n",
+	// 	__func__, val, mode->control_properties.gain_factor, gain);
 
-	imx219c_get_gain_reg(&gain_reg, (u8)gain);
-	err = imx219c_write_reg(s_data, gain_reg.addr, gain_reg.val);
-	if (err)
-		dev_dbg(dev, "%s: gain control error\n", __func__);
+	// imx219c_get_gain_reg(&gain_reg, (u8)gain);
+	// err = imx219c_write_reg(s_data, gain_reg.addr, gain_reg.val);
+	// if (err)
+	// 	dev_dbg(dev, "%s: gain control error\n", __func__);
 
 	return 0;
 }
 
 static int imx219c_set_frame_rate(struct tegracam_device *tc_dev, s64 val)
 {
-	struct camera_common_data *s_data = tc_dev->s_data;
-	struct imx219c *priv = (struct imx219c *)tc_dev->priv;
-	struct device *dev = tc_dev->dev;
-	const struct sensor_mode_properties *mode =
-		&s_data->sensor_props.sensor_modes[s_data->mode_prop_idx];
+	// struct camera_common_data *s_data = tc_dev->s_data;
+	// struct imx219c *priv = (struct imx219c *)tc_dev->priv;
+	// struct device *dev = tc_dev->dev;
+	// const struct sensor_mode_properties *mode =
+	// 	&s_data->sensor_props.sensor_modes[s_data->mode_prop_idx];
 
-	int err = 0;
-	imx219c_reg fl_regs[2];
-	u32 frame_length;
-	int i;
+	// int err = 0;
+	// imx219c_reg fl_regs[2];
+	// u32 frame_length;
+	// int i;
 
-	frame_length = (u32)(mode->signal_properties.pixel_clock.val *
-		(u64)mode->control_properties.framerate_factor /
-		mode->image_properties.line_length / val);
+	// frame_length = (u32)(mode->signal_properties.pixel_clock.val *
+	// 	(u64)mode->control_properties.framerate_factor /
+	// 	mode->image_properties.line_length / val);
 
-	if (frame_length < IMX219C_MIN_FRAME_LENGTH)
-		frame_length = IMX219C_MIN_FRAME_LENGTH;
-	else if (frame_length > IMX219C_MAX_FRAME_LENGTH)
-		frame_length = IMX219C_MAX_FRAME_LENGTH;
+	// if (frame_length < IMX219C_MIN_FRAME_LENGTH)
+	// 	frame_length = IMX219C_MIN_FRAME_LENGTH;
+	// else if (frame_length > IMX219C_MAX_FRAME_LENGTH)
+	// 	frame_length = IMX219C_MAX_FRAME_LENGTH;
 
-	dev_dbg(dev,
-		"%s: val: %llde-6 [fps], frame_length: %u [lines]\n",
-		__func__, val, frame_length);
+	// dev_dbg(dev,
+	// 	"%s: val: %llde-6 [fps], frame_length: %u [lines]\n",
+	// 	__func__, val, frame_length);
 
-	imx219c_get_frame_length_regs(fl_regs, frame_length);
-	for (i = 0; i < 2; i++) {
-		err = imx219c_write_reg(s_data, fl_regs[i].addr, fl_regs[i].val);
-		if (err) {
-			dev_dbg(dev,
-				"%s: frame_length control error\n", __func__);
-			return err;
-		}
-	}
+	// imx219c_get_frame_length_regs(fl_regs, frame_length);
+	// for (i = 0; i < 2; i++) {
+	// 	err = imx219c_write_reg(s_data, fl_regs[i].addr, fl_regs[i].val);
+	// 	if (err) {
+	// 		dev_dbg(dev,
+	// 			"%s: frame_length control error\n", __func__);
+	// 		return err;
+	// 	}
+	// }
 
-	priv->frame_length = frame_length;
+	// priv->frame_length = frame_length;
 
 	return 0;
 }
 
 static int imx219c_set_exposure(struct tegracam_device *tc_dev, s64 val)
 {
-	struct camera_common_data *s_data = tc_dev->s_data;
-	struct imx219c *priv = (struct imx219c *)tc_dev->priv;
-	struct device *dev = tc_dev->dev;
-	const struct sensor_mode_properties *mode =
-		&s_data->sensor_props.sensor_modes[s_data->mode_prop_idx];
+	// struct camera_common_data *s_data = tc_dev->s_data;
+	// struct imx219c *priv = (struct imx219c *)tc_dev->priv;
+	// struct device *dev = tc_dev->dev;
+	// const struct sensor_mode_properties *mode =
+	// 	&s_data->sensor_props.sensor_modes[s_data->mode_prop_idx];
 
-	int err = 0;
-	imx219c_reg ct_regs[2];
-	const s32 max_coarse_time = priv->frame_length - IMX219C_MAX_COARSE_DIFF;
-	const s32 fine_integ_time_factor = priv->fine_integ_time *
-		mode->control_properties.exposure_factor /
-		mode->signal_properties.pixel_clock.val;
-	u32 coarse_time;
-	int i;
+	// int err = 0;
+	// imx219c_reg ct_regs[2];
+	// const s32 max_coarse_time = priv->frame_length - IMX219C_MAX_COARSE_DIFF;
+	// const s32 fine_integ_time_factor = priv->fine_integ_time *
+	// 	mode->control_properties.exposure_factor /
+	// 	mode->signal_properties.pixel_clock.val;
+	// u32 coarse_time;
+	// int i;
 
-	coarse_time = (val - fine_integ_time_factor)
-		* mode->signal_properties.pixel_clock.val
-		/ mode->control_properties.exposure_factor
-		/ mode->image_properties.line_length;
+	// coarse_time = (val - fine_integ_time_factor)
+	// 	* mode->signal_properties.pixel_clock.val
+	// 	/ mode->control_properties.exposure_factor
+	// 	/ mode->image_properties.line_length;
 
-	if (coarse_time < IMX219C_MIN_COARSE_EXPOSURE)
-		coarse_time = IMX219C_MIN_COARSE_EXPOSURE;
-	else if (coarse_time > max_coarse_time) {
-		coarse_time = max_coarse_time;
-		dev_dbg(dev,
-			"%s: exposure limited by frame_length: %d [lines]\n",
-			__func__, max_coarse_time);
-	}
+	// if (coarse_time < IMX219C_MIN_COARSE_EXPOSURE)
+	// 	coarse_time = IMX219C_MIN_COARSE_EXPOSURE;
+	// else if (coarse_time > max_coarse_time) {
+	// 	coarse_time = max_coarse_time;
+	// 	dev_dbg(dev,
+	// 		"%s: exposure limited by frame_length: %d [lines]\n",
+	// 		__func__, max_coarse_time);
+	// }
 
-	dev_dbg(dev, "%s: val: %lld [us], coarse_time: %d [lines]\n",
-		__func__, val, coarse_time);
+	// dev_dbg(dev, "%s: val: %lld [us], coarse_time: %d [lines]\n",
+	// 	__func__, val, coarse_time);
 
-	imx219c_get_coarse_integ_time_regs(ct_regs, coarse_time);
+	// imx219c_get_coarse_integ_time_regs(ct_regs, coarse_time);
 
-	for (i = 0; i < 2; i++) {
-		err = imx219c_write_reg(s_data, ct_regs[i].addr, ct_regs[i].val);
-		if (err) {
-			dev_dbg(dev,
-				"%s: coarse_time control error\n", __func__);
-			return err;
-		}
-	}
+	// for (i = 0; i < 2; i++) {
+	// 	err = imx219c_write_reg(s_data, ct_regs[i].addr, ct_regs[i].val);
+	// 	if (err) {
+	// 		dev_dbg(dev,
+	// 			"%s: coarse_time control error\n", __func__);
+	// 		return err;
+	// 	}
+	// }
 
 	return 0;
 }
@@ -303,12 +303,12 @@ static int imx219c_power_on(struct camera_common_data *s_data)
 		return err;
 	}
 
-	if (pw->reset_gpio) {
-		if (gpio_cansleep(pw->reset_gpio))
-			gpio_set_value_cansleep(pw->reset_gpio, 0);
-		else
-			gpio_set_value(pw->reset_gpio, 0);
-	}
+	// if (pw->reset_gpio) {
+	// 	if (gpio_cansleep(pw->reset_gpio))
+	// 		gpio_set_value_cansleep(pw->reset_gpio, 0);
+	// 	else
+	// 		gpio_set_value(pw->reset_gpio, 0);
+	// }
 
 	if (unlikely(!(pw->avdd || pw->iovdd || pw->dvdd)))
 		goto skip_power_seqn;
@@ -336,12 +336,12 @@ static int imx219c_power_on(struct camera_common_data *s_data)
 	usleep_range(10, 20);
 
 skip_power_seqn:
-	if (pw->reset_gpio) {
-		if (gpio_cansleep(pw->reset_gpio))
-			gpio_set_value_cansleep(pw->reset_gpio, 1);
-		else
-			gpio_set_value(pw->reset_gpio, 1);
-	}
+// 	if (pw->reset_gpio) {
+// 		if (gpio_cansleep(pw->reset_gpio))
+// 			gpio_set_value_cansleep(pw->reset_gpio, 1);
+// 		else
+// 			gpio_set_value(pw->reset_gpio, 1);
+// 	}
 
 	/* Need to wait for t4 + t5 + t9 time as per the data sheet */
 	/* t4 - 200us, t5 - 21.2ms, t9 - 1.2ms */
@@ -365,7 +365,7 @@ imx219c_avdd_fail:
 
 static int imx219c_power_off(struct camera_common_data *s_data)
 {
-	int err = 0;
+	// int err = 0;
 	struct camera_common_power_rail *pw = s_data->power;
 	struct camera_common_pdata *pdata = s_data->pdata;
 	struct device *dev = s_data->dev;
@@ -373,18 +373,18 @@ static int imx219c_power_off(struct camera_common_data *s_data)
 	dev_dbg(dev, "%s: power off\n", __func__);
 
 	if (pdata && pdata->power_off) {
-		err = pdata->power_off(pw);
-		if (err) {
-			dev_err(dev, "%s failed.\n", __func__);
-			return err;
-		}
-	} else {
-		if (pw->reset_gpio) {
-			if (gpio_cansleep(pw->reset_gpio))
-				gpio_set_value_cansleep(pw->reset_gpio, 0);
-			else
-				gpio_set_value(pw->reset_gpio, 0);
-		}
+	// 	err = pdata->power_off(pw);
+	// 	if (err) {
+	// 		dev_err(dev, "%s failed.\n", __func__);
+	// 		return err;
+	// 	}
+	// } else {
+	// 	if (pw->reset_gpio) {
+	// 		if (gpio_cansleep(pw->reset_gpio))
+	// 			gpio_set_value_cansleep(pw->reset_gpio, 0);
+	// 		else
+	// 			gpio_set_value(pw->reset_gpio, 0);
+	// 	}
 
 		usleep_range(10, 10);
 
@@ -434,32 +434,32 @@ static int imx219c_power_get(struct tegracam_device *tc_dev)
 	struct camera_common_data *s_data = tc_dev->s_data;
 	struct camera_common_power_rail *pw = s_data->power;
 	struct camera_common_pdata *pdata = s_data->pdata;
-	struct clk *parent;
+	// struct clk *parent;
 	int err = 0;
 
-	if (!pdata) {
-		dev_err(dev, "pdata missing\n");
-		return -EFAULT;
-	}
+	// if (!pdata) {
+	// 	dev_err(dev, "pdata missing\n");
+	// 	return -EFAULT;
+	// }
 
-	/* Sensor MCLK (aka. INCK) */
-	if (pdata->mclk_name) {
-		pw->mclk = devm_clk_get(dev, pdata->mclk_name);
-		if (IS_ERR(pw->mclk)) {
-			dev_err(dev, "unable to get clock %s\n",
-				pdata->mclk_name);
-			return PTR_ERR(pw->mclk);
-		}
+	// /* Sensor MCLK (aka. INCK) */
+	// if (pdata->mclk_name) {
+	// 	pw->mclk = devm_clk_get(dev, pdata->mclk_name);
+	// 	if (IS_ERR(pw->mclk)) {
+	// 		dev_err(dev, "unable to get clock %s\n",
+	// 			pdata->mclk_name);
+	// 		return PTR_ERR(pw->mclk);
+	// 	}
 
-		if (pdata->parentclk_name) {
-			parent = devm_clk_get(dev, pdata->parentclk_name);
-			if (IS_ERR(parent)) {
-				dev_err(dev, "unable to get parent clock %s",
-					pdata->parentclk_name);
-			} else
-				clk_set_parent(pw->mclk, parent);
-		}
-	}
+	// 	if (pdata->parentclk_name) {
+	// 		parent = devm_clk_get(dev, pdata->parentclk_name);
+	// 		if (IS_ERR(parent)) {
+	// 			dev_err(dev, "unable to get parent clock %s",
+	// 				pdata->parentclk_name);
+	// 		} else
+	// 			clk_set_parent(pw->mclk, parent);
+	// 	}
+	// }
 
 	/* analog 2.8v */
 	if (pdata->regulators.avdd)
@@ -555,39 +555,41 @@ error:
 
 static int imx219c_set_mode(struct tegracam_device *tc_dev)
 {
-	struct imx219c *priv = (struct imx219c *)tegracam_get_privdata(tc_dev);
-	struct camera_common_data *s_data = tc_dev->s_data;
+	// struct imx219c *priv = (struct imx219c *)tegracam_get_privdata(tc_dev);
+	// struct camera_common_data *s_data = tc_dev->s_data;
 
-	int err = 0;
+	// int err = 0;
 
-	err = imx219c_write_table(priv, mode_table[IMX219C_MODE_COMMON]);
-	if (err)
-		return err;
+	// err = imx219c_write_table(priv, mode_table[IMX219C_MODE_COMMON]);
+	// if (err)
+	// 	return err;
 
-	err = imx219c_write_table(priv, mode_table[s_data->mode]);
-	if (err)
-		return err;
+	// err = imx219c_write_table(priv, mode_table[s_data->mode]);
+	// if (err)
+	// 	return err;
 
 	return 0;
 }
 
 static int imx219c_start_streaming(struct tegracam_device *tc_dev)
 {
-	struct imx219c *priv = (struct imx219c *)tegracam_get_privdata(tc_dev);
+	// struct imx219c *priv = (struct imx219c *)tegracam_get_privdata(tc_dev);
 
-	return imx219c_write_table(priv, mode_table[IMX219C_START_STREAM]);
+	// return imx219c_write_table(priv, mode_table[IMX219C_START_STREAM]);
+	return 0;
 }
 
 static int imx219c_stop_streaming(struct tegracam_device *tc_dev)
 {
-	int err;
-	struct imx219c *priv = (struct imx219c *)tegracam_get_privdata(tc_dev);
+	// int err;
+	// struct imx219c *priv = (struct imx219c *)tegracam_get_privdata(tc_dev);
 
-	err = imx219c_write_table(priv, mode_table[IMX219C_STOP_STREAM]);
+	// err = imx219c_write_table(priv, mode_table[IMX219C_STOP_STREAM]);
 
-	usleep_range(50000, 51000);
+	// usleep_range(50000, 51000);
 
-	return err;
+	// return err;
+	return 0;
 }
 
 static struct camera_common_sensor_ops imx219c_common_ops = {
@@ -645,10 +647,10 @@ static int imx219c_board_setup(struct imx219c *priv)
 	// 		__func__, reg_val[0], reg_val[1]);
 
 	/* Sensor fine integration time */
-	err = imx219c_get_fine_integ_time(priv, &priv->fine_integ_time);
-	if (err)
-		dev_err(dev, "%s: error querying sensor fine integ. time\n",
-			__func__);
+	// err = imx219c_get_fine_integ_time(priv, &priv->fine_integ_time);
+	// if (err)
+	// 	dev_err(dev, "%s: error querying sensor fine integ. time\n",
+	// 		__func__);
 
 err_reg_probe:
 	imx219c_power_off(s_data);

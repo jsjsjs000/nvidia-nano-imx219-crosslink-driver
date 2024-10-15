@@ -109,7 +109,7 @@
 
 				sensor_model = "imx219c";
 
-use_sensor_mode_id = "false";
+				use_sensor_mode_id = "true";
 
 				/**
 				* ==== Modes ====
@@ -301,7 +301,7 @@ use_sensor_mode_id = "false";
 
 				sensor_model = "imx219c";
 
-use_sensor_mode_id = "false";
+				use_sensor_mode_id = "true";
 
 				/**
 				* ==== Modes ====
