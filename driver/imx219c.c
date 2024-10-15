@@ -121,39 +121,16 @@ static int imx219c_power_on(struct camera_common_data *s_data)
 		return err;
 	}
 
-	// if (pw->reset_gpio) {
-	// 	if (gpio_cansleep(pw->reset_gpio))
-	// 		gpio_set_value_cansleep(pw->reset_gpio, 0);
-	// 	else
-	// 		gpio_set_value(pw->reset_gpio, 0);
-	// }
+// 	if (pw->reset_gpio) {
+// 		if (gpio_cansleep(pw->reset_gpio))
+// 			gpio_set_value_cansleep(pw->reset_gpio, 0);
+// 		else
+// 			gpio_set_value(pw->reset_gpio, 0);
+// 	}
 
-	if (unlikely(!(pw->avdd || pw->iovdd || pw->dvdd)))
-		goto skip_power_seqn;
+// 	usleep_range(10, 20);
 
-	usleep_range(10, 20);
-
-	if (pw->avdd) {
-		err = regulator_enable(pw->avdd);
-		if (err)
-			goto imx219c_avdd_fail;
-	}
-
-	if (pw->iovdd) {
-		err = regulator_enable(pw->iovdd);
-		if (err)
-			goto imx219c_iovdd_fail;
-	}
-
-	if (pw->dvdd) {
-		err = regulator_enable(pw->dvdd);
-		if (err)
-			goto imx219c_dvdd_fail;
-	}
-
-	usleep_range(10, 20);
-
-skip_power_seqn:
+// skip_power_seqn:
 // 	if (pw->reset_gpio) {
 // 		if (gpio_cansleep(pw->reset_gpio))
 // 			gpio_set_value_cansleep(pw->reset_gpio, 1);
@@ -163,22 +140,11 @@ skip_power_seqn:
 
 	/* Need to wait for t4 + t5 + t9 time as per the data sheet */
 	/* t4 - 200us, t5 - 21.2ms, t9 - 1.2ms */
-	usleep_range(23000, 23100);
+	// usleep_range(23000, 23100);
 
 	pw->state = SWITCH_ON;
 
 	return 0;
-
-imx219c_dvdd_fail:
-	regulator_disable(pw->iovdd);
-
-imx219c_iovdd_fail:
-	regulator_disable(pw->avdd);
-
-imx219c_avdd_fail:
-	dev_err(dev, "%s failed.\n", __func__);
-
-	return -ENODEV;
 }
 
 static int imx219c_power_off(struct camera_common_data *s_data)
@@ -205,13 +171,6 @@ static int imx219c_power_off(struct camera_common_data *s_data)
 	// 	}
 
 		usleep_range(10, 10);
-
-		if (pw->dvdd)
-			regulator_disable(pw->dvdd);
-		if (pw->iovdd)
-			regulator_disable(pw->iovdd);
-		if (pw->avdd)
-			regulator_disable(pw->avdd);
 	}
 
 	pw->state = SWITCH_OFF;
@@ -227,64 +186,20 @@ static int imx219c_power_put(struct tegracam_device *tc_dev)
 	if (unlikely(!pw))
 		return -EFAULT;
 
-	if (likely(pw->dvdd))
-		devm_regulator_put(pw->dvdd);
-
-	if (likely(pw->avdd))
-		devm_regulator_put(pw->avdd);
-
-	if (likely(pw->iovdd))
-		devm_regulator_put(pw->iovdd);
-
-	pw->dvdd = NULL;
-	pw->avdd = NULL;
-	pw->iovdd = NULL;
-
-	if (likely(pw->reset_gpio))
-		gpio_free(pw->reset_gpio);
+	// if (likely(pw->reset_gpio))
+	// 	gpio_free(pw->reset_gpio);
 
 	return 0;
 }
 
 static int imx219c_power_get(struct tegracam_device *tc_dev)
 {
-	struct device *dev = tc_dev->dev;
 	struct camera_common_data *s_data = tc_dev->s_data;
 	struct camera_common_power_rail *pw = s_data->power;
-	struct camera_common_pdata *pdata = s_data->pdata;
-	// struct clk *parent;
-	int err = 0;
 
-	/* analog 2.8v */
-	if (pdata->regulators.avdd)
-		err |= camera_common_regulator_get(dev,
-				&pw->avdd, pdata->regulators.avdd);
-	/* IO 1.8v */
-	if (pdata->regulators.iovdd)
-		err |= camera_common_regulator_get(dev,
-				&pw->iovdd, pdata->regulators.iovdd);
-	/* dig 1.2v */
-	if (pdata->regulators.dvdd)
-		err |= camera_common_regulator_get(dev,
-				&pw->dvdd, pdata->regulators.dvdd);
-	if (err) {
-		dev_err(dev, "%s: unable to get regulator(s)\n", __func__);
-		goto done;
-	}
-
-	/* Reset or ENABLE GPIO */
-	// pw->reset_gpio = pdata->reset_gpio;
-	// err = gpio_request(pw->reset_gpio, "cam_reset_gpio");
-	// if (err < 0) {
-	// 	dev_err(dev, "%s: unable to request reset_gpio (%d)\n",
-	// 		__func__, err);
-	// 	goto done;
-	// }
-
-done:
 	pw->state = SWITCH_OFF;
 
-	return err;
+	return 0;
 }
 
 static struct camera_common_pdata *imx219c_parse_dt(
@@ -325,16 +240,6 @@ static struct camera_common_pdata *imx219c_parse_dt(
 	if (err)
 		dev_dbg(dev, "mclk name not present, "
 			"assume sensor driven externally\n");
-
-	err = of_property_read_string(np, "avdd-reg",
-		&board_priv_pdata->regulators.avdd);
-	err |= of_property_read_string(np, "iovdd-reg",
-		&board_priv_pdata->regulators.iovdd);
-	err |= of_property_read_string(np, "dvdd-reg",
-		&board_priv_pdata->regulators.dvdd);
-	if (err)
-		dev_dbg(dev, "avdd, iovdd and/or dvdd reglrs. not present, "
-			"assume sensor powered independently\n");
 
 	board_priv_pdata->has_eeprom =
 		of_property_read_bool(np, "has-eeprom");
@@ -417,12 +322,6 @@ static int imx219c_board_setup(struct imx219c *priv)
 	// if (!((reg_val[0] == 0x02) && reg_val[1] == 0x19))
 	// 	dev_err(dev, "%s: invalid sensor model id: %x%x\n",
 	// 		__func__, reg_val[0], reg_val[1]);
-
-	/* Sensor fine integration time */
-	// err = imx219c_get_fine_integ_time(priv, &priv->fine_integ_time);
-	// if (err)
-	// 	dev_err(dev, "%s: error querying sensor fine integ. time\n",
-	// 		__func__);
 
 err_reg_probe:
 	imx219c_power_off(s_data);
