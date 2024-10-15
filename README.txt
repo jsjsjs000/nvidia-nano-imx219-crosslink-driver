@@ -69,7 +69,7 @@ l4t  # set environments
 
 l4t_menuconfig
 # ----------------------------------------
-/ imx219 = [n]
+/ imx219 = [n]  # reserve device on I2C address 0x10
 / imx219c = [m]
 # ----------------------------------------
 
