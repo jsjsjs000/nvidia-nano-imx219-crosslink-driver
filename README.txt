@@ -112,7 +112,7 @@ import sys
 sys.path.append('/opt/nvidia/jetson-io')
 from Linux.extlinux import add_entry
 add_entry('/boot/extlinux/extlinux.conf',
-         'Jetson-IMX477-Crosslink', 'IMX477-CROSSLINK',
+         'Jetson-IMX219-Crosslink', 'IMX219-CROSSLINK',
          '/boot/kernel_$dtbfilename-imx219-crosslink.dtb',
          True)
 PYTHON_EOF

@@ -33,7 +33,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			rbpcv5_imx219c_a@10 {
-				status = "okay";
+				status = "disabled";
 				reset-gpios = <&gpio CAM1_PWDN GPIO_ACTIVE_HIGH>;
 			};
 		};
@@ -42,7 +42,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			rbpcv5_imx219c_e@10 {
-				status = "okay";
+				status = "disabled";
 				reset-gpios = <&gpio CAM2_PWDN GPIO_ACTIVE_HIGH>;
 			};
 		};
