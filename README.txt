@@ -78,13 +78,13 @@ alias l4t_upload='scp build/arch/arm64/boot/dts/tegra210-p3448-all-p3449-0000-im
 clear; l4t_zImage && l4t_dtbs && l4t_modules && l4t_upload
 
 ll build/arch/arm64/boot/dts/tegra210-p3448-all-p3449-0000-imx219-crosslink.dtbo
-scp build/arch/arm64/boot/dts/tegra210-p3448-all-p3449-0000-imx219-crosslink.dtbo root@192.168.3.12:/boot/
 ll build/arch/arm64/boot/dts/tegra210-p3448-0000-p3449-0000-b00.dtb
-scp build/arch/arm64/boot/dts/tegra210-p3448-0000-p3449-0000-b00.dtb root@192.168.3.12:/boot/
-
 ll build/arch/arm64/boot/Image
-scp build/arch/arm64/boot/Image root@192.168.3.12:/boot/
 ll build/drivers/media/i2c/imx219c.ko
+
+scp build/arch/arm64/boot/dts/tegra210-p3448-all-p3449-0000-imx219-crosslink.dtbo root@192.168.3.12:/boot/
+scp build/arch/arm64/boot/dts/tegra210-p3448-0000-p3449-0000-b00.dtb root@192.168.3.12:/boot/
+scp build/arch/arm64/boot/Image root@192.168.3.12:/boot/
 scp build/drivers/media/i2c/imx219c.ko root@192.168.3.12:/lib/modules/4.9.253-tegra/kernel/drivers/media/i2c/
 
 	# nVidia
