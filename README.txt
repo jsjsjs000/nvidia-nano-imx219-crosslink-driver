@@ -131,7 +131,19 @@ static const struct camera_common_frmfmt imx219_frmfmt[] = {
 	{{640, 480},	imx219_60fps, 1, 0, IMX219_MODE_640x480_60FPS}, // $$
 # ----------------------------------------
 
-DSIPLAY=:0.0 gst-launch-1.0 nvarguscamerasrc ! 'video/x-raw(memory:NVMM), width=640, height=480, format=(string)NV12, framerate=(fraction)60/1' ! fpsdisplaysink -v text-overlay=0 video-sink="nvoverlaysink overlay-x=100 overlay-y=100 overlay-w=640 overlay-h=480"
+# RGGB
+DISPLAY=:0.0 gst-launch-1.0 nvarguscamerasrc ! 'video/x-raw(memory:NVMM), width=640, height=480, format=(string)NV12, framerate=(fraction)60/1' ! fpsdisplaysink -v text-overlay=0 video-sink="nvoverlaysink overlay-x=100 overlay-y=100 overlay-w=640 overlay-h=480"
+
+# RGB
+DISPLAY=:0.0 gst-launch-1.0 nvarguscamerasrc ! 'video/x-raw(memory:NVMM),format=BGRA,width=640,height=480' ! videoconvert ! 'video/x-raw(memory:NVMM),format=NV12' ! nvvidconv ! fpsdisplaysink -v text-overlay=0 video-sink="nvoverlaysink overlay-x=100 overlay-y=100 overlay-w=640 overlay-h=480"
+
+DISPLAY=:0.0 gst-launch-1.0 v4l2src device=/dev/video0 ! 'video/x-raw, width=640, height=480, format=(string)BGRA, framerate=(fraction)60/1' ! fpsdisplaysink -v text-overlay=0 video-sink="nvoverlaysink overlay-x=100 overlay-y=100 overlay-w=640 overlay-h=480"
+
+# black screen
+DISPLAY=:0.0 gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw,format=BGRA,width=640,height=480 ! videoconvert ! video/x-raw,format=NV12 ! nvvidconv ! fpsdisplaysink -v text-overlay=0 video-sink="nvoverlaysink overlay-x=100 overlay-y=100 overlay-w=640 overlay-h=480"
+
+# ? ---
+gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw,format=BGRA,width=640,height=480 ! videoconvert ! video/x-raw,format=NV12 ! nvvidconv ! nvoverlaysink sync=false
 
 ls /dev/v4l-subdev*
 #> /dev/v4l-subdev0  /dev/v4l-subdev1
@@ -139,7 +151,9 @@ ls /dev/v4l-subdev*
 ls /dev/v4l/by-path/platform-54080000.vi-video-index0
 #> /dev/v4l/by-path/platform-54080000.vi-video-index0
 
-
+# dump RAW image data
+v4l2-ctl --set-fmt-video=width=640,height=480,pixelformat=NV12 --stream-mmap --set-ctrl=sensor_mode=0 --stream-count=10 -d /dev/video0 --stream-to=image.raw
+hexdump image.raw
 
 -------------------------------------------------------------------
 	# działa - moduł wkompilowany w Kernel
