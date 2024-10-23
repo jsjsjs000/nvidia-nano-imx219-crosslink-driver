@@ -139,11 +139,14 @@ DISPLAY=:0.0 gst-launch-1.0 nvarguscamerasrc ! 'video/x-raw(memory:NVMM),format=
 
 DISPLAY=:0.0 gst-launch-1.0 v4l2src device=/dev/video0 ! 'video/x-raw, width=640, height=480, format=(string)BGRA, framerate=(fraction)60/1' ! fpsdisplaysink -v text-overlay=0 video-sink="nvoverlaysink overlay-x=100 overlay-y=100 overlay-w=640 overlay-h=480"
 
-# black screen
-DISPLAY=:0.0 gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw,format=BGRA,width=640,height=480 ! videoconvert ! video/x-raw,format=NV12 ! nvvidconv ! fpsdisplaysink -v text-overlay=0 video-sink="nvoverlaysink overlay-x=100 overlay-y=100 overlay-w=640 overlay-h=480"
+# RGB nvoverlaysink with FPS measure in console
+DISPLAY=:0.0 gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw,format=BGRA,width=640,height=480 ! videoconvert ! video/x-raw,format=NV12 ! nvvidconv ! fpsdisplaysink -v text-overlay=0 sync=false video-sink="nvoverlaysink overlay-x=100 overlay-y=100 overlay-w=640 overlay-h=480 sync=false"
 
-# ? ---
-gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw,format=BGRA,width=640,height=480 ! videoconvert ! video/x-raw,format=NV12 ! nvvidconv ! nvoverlaysink sync=false
+# RGB xvimagesink with FPS measure in console
+gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw,format=BGRA,width=640,height=480 ! videoconvert ! video/x-raw,format=NV12 ! videoconvert ! fpsdisplaysink -v text-overlay=0 sync=false video-sink="xvimagesink sync=false"
+
+# RGB xvimagesink with FPS measure in screen
+gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw,format=BGRA,width=640,height=480 ! videoconvert ! video/x-raw,format=NV12 ! videoconvert ! fpsdisplaysink sync=false video-sink="xvimagesink sync=false"
 
 ls /dev/v4l-subdev*
 #> /dev/v4l-subdev0  /dev/v4l-subdev1
