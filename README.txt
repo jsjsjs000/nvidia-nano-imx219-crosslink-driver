@@ -179,7 +179,29 @@ LABEL Jetson
 # ----------------------------------------
 
 
-
+	# nVidia
 echo "alias i='i2cdetect -y -r 7'" >> ~/.bashrc
 echo "alias d='dmesg | grep -i imx219'" >> ~/.bashrc
 echo "alias re='reboot'" >> ~/.bashrc
+
+--------------------------------------------
+
+apt-get install v4l-utils
+
+v4l2-ctl --list-formats-ext
+#> BGRA
+
+v4l2-ctl --all --device /dev/video0
+
+v4l2-compliance -d /dev/video0
+
+v4l2-ctl -V -d /dev/video0
+
+v4l2-ctl --stream-mmap --stream-to=file.raw --stream-count=1
+v4l2-ctl --device /dev/video0 --set-fmt-video=width=640,height=480,pixelformat=RGBA --stream-mmap --stream-to=file.raw --stream-count=1
+
+
+v4l2-ctl --set-fmt-video=width=3280,height=2464,pixelformat=AR24 --stream-mmap --stream-count=1 -d /dev/video0 --stream-to=image.raw
+https://github.com/xenicsir/dione_mipi_tegra/tree/main/jetpack
+
+--------------------------------------------
